@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2019??4??25?? ????10:45:42 by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.ssh.pojo.User" table="USER">
+        <id name="u_id" type="java.lang.Integer">
+            <column name="U_ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="u_name" type="java.lang.String">
+            <column name="U_NAME" />
+        </property>
+        <property name="u_password" type="java.lang.String">
+            <column name="U_PASSWORD" />
+        </property>
+        <property name="u_realname" type="java.lang.String">
+            <column name="U_REALNAME" />
+        </property>
+        <property name="u_email" type="java.lang.String">
+            <column name="U_EMAIL" />
+        </property>
+        <property name="u_r_id" type="java.lang.Integer">
+            <column name="U_R_ID" />
+        </property>
+        <property name="u_status" type="java.lang.Integer">
+            <column name="U_STATUS" />
+        </property>
+        <property name="u_use" type="java.lang.Integer">
+            <column name="U_USE" />
+        </property>
+    </class>
+</hibernate-mapping>

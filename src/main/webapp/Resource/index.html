@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>index</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <link href="../bootstrap/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link href="../bootstrap/bootstrap-3.3.7-dist/css/bootstrap-table.css" rel="stylesheet" />
+	<script type="text/javascript" src="../bootstrap/js/jquery-3.3.1.js"></script>
+	<script type="text/javascript" src="../bootstrap/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../bootstrap/bootstrap-3.3.7-dist/js/bootstrap-table.js"></script>
+	<script type="text/javascript" src="../bootstrap/bootstrap-3.3.7-dist/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript" src="../Js/ckform.js"></script>
+    <script type="text/javascript" src="../Js/common.js"></script>
+
+ 
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+	<script type="text/javascript">
+	$(function(){
+		getMenuList();
+	})
+	function queryParams(params) {  //配置参数
+	    var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+	    	pageNumber: params.pageNumber-1, //页面大小
+	    	pageSize: params.pageSize, //页码
+	    	name:$("#username").val()
+	    };
+	    return temp;
+	}
+	function getMenuList(){
+		$('#table').bootstrapTable({
+			url:'../showMenuList_showMenuList',// 请求后台的路径
+			method: 'post',//请求方式
+			contentType: "application/x-www-form-urlencoded",
+			pagination: true,//是否分页
+			toolbar: '#toolbar',//工具按钮用哪个容器
+		    sidePagination: "server", //表示服务端请求
+			queryParamsType : "",
+			pageNumber: 1,//当前页
+			pageSize: 5,//每页多少
+			queryParams: queryParams,
+		    columns: [ {
+		        field: 'res_id',
+		        title: '编号',
+		        align:'center'
+		    }, {
+		        field: 'res_name',
+		        title: '资源姓名',
+		        align:'center'
+		    }, {
+		        field: 'res_url',
+		        title: '路径',
+		        align:'center'
+		    }, {
+		        field: 'res_status',
+		        title: '是否有效',
+		        align:'center',
+		        formatter:function(value,row,index){
+		        	var ss = "";
+		        	if(row.res_status == 0){
+		        		ss="有效";
+		        	}else if(row.res_status == 1){
+		        		ss="无效";
+		        	}
+		        	return ss;
+		        }
+		    },{
+		        field: 'id',
+		        title: '操作',
+			    align:'center',
+		        formatter:function(value,row,index){
+		        	var ss = "<button class='btn btn-default glyphicon glyphicon-wrench' onclick='update("+row.res_id+")'></button>&nbsp;&nbsp;"
+		        			+"<button class='btn btn-danger glyphicon glyphicon-remove' onclick='del("+row.res_id+")'></button>";
+		        	return ss;
+		        }
+		    }]
+		});
+	}
+	
+	function mohu(){
+		$('#table').bootstrapTable('refresh',{pageNumber:1, //页面大小
+	    	pageSize:5, //页码
+	    	name:$("#username").val()})
+	}
+	function update(id){
+		$.ajax({
+			url:"../echoResourcessMessage_echoResourcess",
+			type:"post",
+			data:{res_id:id},
+			dataType:"json",
+			success:function(data){
+				$('#updateResources').modal({
+					backdrop:"static"		
+				});
+				$("#res_name").val(data.res_name);
+				$("#res_url").val(data.res_url);
+				$("#res_id").val(data.res_id);
+				if(data.res_status == 0){
+					$("#status").html("<input type='radio' name='res_status' value='0' checked/> 有效"
+				              +"<input type='radio' name='res_status' value='1' /> 无效")
+				}else if(data.res_status == 1){
+					$("#status").html("<input type='radio' name='res_status' value='0' /> 有效"
+				              +"<input type='radio' name='res_status' value='1' checked /> 无效")
+				}
+			}
+		})
+	}
+	
+	function qikong(){
+		$("#username").val("");
+		$('#table').bootstrapTable('refresh',{pageNumber:1, //页面大小
+	    	pageSize:5, //页码
+	    	name:$("#username").val()})
+	}
+	
+	function updateResource(){
+		$.ajax({
+			url:'../updateResource_updateRes',
+			type:"post",
+			data:{
+				res_id:$("#res_id").val(),
+				res_name:$("#res_name").val(),
+				res_url:$("#res_url").val(),
+				res_status:$("input[type='radio']:checked").val()
+			},
+			success:function(data){
+				$('#table').bootstrapTable('refresh',{//页面大小
+			    	pageSize:5, //页码
+			    	name:$("#username").val()})
+			}
+		})
+	}
+	</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="index.html" method="get" name="ResourceLikeForm"	>    
+    资源(菜单)名称：
+    <input type="text" name="res_name" id="username"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
+    <button type="button" class="btn btn-primary" id="LikeName"  onclick="mohu()">查询</button>
+    <button type="button" class="btn btn-primary"  onclick="qikong()">清空</button>
+    <button type="button" class="btn btn-primary" onclick="javascript:window.location.href='add.html'">添加资源</button>
+</form>
+<table id="table" data-row-style="rowStyle"></table>
+
+<!-- 修改模态框start -->
+<div class="modal fade" id="updateResources" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">修改资源</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" id="yourfrom">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">资源名称</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" id="res_name" > 
+							<input type="hidden" name="nowcode" id="res_id"> 
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">url</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" id="res_url" > 
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">是否有效</label>
+						<div class="col-sm-6" id="status">
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary" onclick="updateResource()" data-dismiss="modal">更新</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end -->
+</body>
+</html>

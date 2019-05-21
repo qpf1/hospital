@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2019??4??25?? ????10:45:42 by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.ssh.pojo.Resources" table="RESOURCES" select-before-update="true">
+        <id name="res_id" type="java.lang.Integer">
+            <column name="RES_ID" />
+            <generator class="native" />
+        </id>
+        <property name="res_name" type="java.lang.String">
+            <column name="RES_NAME" />
+        </property>
+        <property name="res_url" type="java.lang.String">
+            <column name="RES_URL" />
+        </property>
+        <property name="res_status" type="java.lang.Integer">
+            <column name="RES_STATUS" />
+        </property>
+        <property name="res_use" type="java.lang.Integer">
+            <column name="RES_USE" />
+        </property>
+    </class>
+</hibernate-mapping>
